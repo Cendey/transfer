@@ -19,6 +19,11 @@ import java.io.File;
 public class DataProviderFactory {
 
     private static final String baseURL = "http://localhost:9080/rest";
+    private static final String UPLOAD_DIR = "I:/";
+    private static final String UPLOAD_FILE_NAME = "Beauty.jpg";
+    private static final String UPLOAD_ACTION_PATH = "file/upload";
+    private static final String DOWNLOAD_FILE_NAME = "linux.png";
+    private static final String DOWNLOAD_ACTION_PATH = "file/download";
     private static IFileRequest instance;
 
     private static IFileRequest getIFileRequestInstance() {
@@ -30,26 +35,25 @@ public class DataProviderFactory {
 
     @DataProvider(name = "file-walk-download")
     public static Object[][] downloadDataProvider() {
-        String actionPath = "file/download";
-        String fileName = "linux.png";
-        return new Object[][]{{getIFileRequestInstance(), baseURL, actionPath, fileName}};
+        return new Object[][]{{getIFileRequestInstance(), baseURL, DOWNLOAD_ACTION_PATH, DOWNLOAD_FILE_NAME}};
     }
 
     @DataProvider(name = "file-walk-upload")
     public static Object[][] uploadDataProvider() {
-        String directory = "I:/";
-        String uploadFileName = "Beauty.jpg";
-        File entity = new File(directory, uploadFileName);
+
+        File entity = new File(UPLOAD_DIR, UPLOAD_FILE_NAME);
         if (entity.exists() && entity.isFile() && entity.canRead()) {
-            String actionPath = "file/upload";
-            return new Object[][]{{getIFileRequestInstance(), entity, baseURL, actionPath}};
+            return new Object[][]{{getIFileRequestInstance(), entity, baseURL, UPLOAD_ACTION_PATH}};
         } else {
             return new Object[][]{};
         }
     }
 
     @DataProvider(name = "file-walk-all")
-    public static Object[][] fileWalk(){
-        return new Object[][]{};
+    public static Object[][] fileWalkDataProvider() {
+        return new Object[][]{
+            {
+                getIFileRequestInstance(), baseURL, UPLOAD_DIR, UPLOAD_ACTION_PATH, UPLOAD_FILE_NAME,
+                DOWNLOAD_ACTION_PATH, DOWNLOAD_FILE_NAME}};
     }
 }

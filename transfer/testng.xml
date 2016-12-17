@@ -3,8 +3,7 @@
         <classes>
             <class name="edu.mit.lab.service.FileRequestImplTest">
                 <methods>
-                    <exclude name=""/>
-                    <include name="test*"/>
+                    <exclude name="testAllFileService"/>
                 </methods>
             </class>
         </classes>

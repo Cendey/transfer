@@ -37,13 +37,11 @@ public class FileRequestImplTest {
         String downloadPath, String downloadFileName) throws Exception {
         File entity = new File(directory, uploadFileName);
         if (entity.exists() && entity.isFile() && entity.canRead()) {
-
             System.out
                 .println(
                     String.format("Response message : %s", instance.uploadService(entity, baseURL, uploadPath)));
         }
         System.out.println(instance.downloadFileService(baseURL, downloadPath, downloadFileName));
-
     }
 
 }
