@@ -1,4 +1,4 @@
-package edu.mit.lab.interfs;
+package edu.mit.lab.interfs.service;
 
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;

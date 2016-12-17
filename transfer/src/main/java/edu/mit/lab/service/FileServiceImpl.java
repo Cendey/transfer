@@ -1,6 +1,6 @@
 package edu.mit.lab.service;
 
-import edu.mit.lab.interfs.IFileService;
+import edu.mit.lab.interfs.service.IFileService;
 import edu.mit.lab.utils.Toolkit;
 import org.apache.commons.io.FilenameUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;

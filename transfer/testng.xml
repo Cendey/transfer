@@ -1,7 +1,7 @@
 <suite name="Suite Customized Test" verbose="1">
     <test name="Optional Testing">
         <classes>
-            <class name="edu.mit.lab.service.FileWalkClientTest">
+            <class name="edu.mit.lab.service.FileRequestImplTest">
                 <methods>
                     <exclude name=""/>
                     <include name="test*"/>

@@ -1,6 +1,7 @@
 package edu.mit.lab.request;
 
 
+import edu.mit.lab.interfs.request.IFileRequest;
 import edu.mit.lab.utils.Toolkit;
 import org.apache.commons.io.FilenameUtils;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
@@ -19,31 +20,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class FileWalkClient {
+public class FileRequestImpl implements IFileRequest {
 
     private static final String DOWNLOAD_FILE_LOCATION = "I:/Download/Store";
 
-    public static void main(String[] args) throws Exception {
-        if (args != null && args.length == 3) {
-            String baseURL = "http://localhost:9080/rest";
-            String directory = args[0];
-            String uploadFileName = args[1];
-            File entity = new File(directory, uploadFileName);
-            if (entity.exists() && entity.isFile() && entity.canRead()) {
-                String uploadPath = "file/upload";
-                System.out
-                    .println(String.format("Response message : %s", uploadService(entity, baseURL, uploadPath)));
-            }
-            String downloadPath = "file/download";
-            String downloadFileName = args[2];
-            System.out.println(downloadFileService(baseURL, downloadPath, downloadFileName));
-        } else {
-            System.err.println(String.format("Invalid usage for restful service!%nargs[0]:%s%nargs[1]:%s",
-                "file directory", "file name"));
-        }
-    }
-
-    public static String uploadService(File entity, String baseURL, String specifiedPath) throws Exception {
+    public String uploadService(File entity, String baseURL, String specifiedPath) throws Exception {
         Client client = null;
         WebTarget target;
         Response response = null;
@@ -100,7 +81,7 @@ public class FileWalkClient {
         return message;
     }
 
-    public static String downloadFileService(String baseURL, String specifiedPath, String fileName)
+    public String downloadFileService(String baseURL, String specifiedPath, String fileName)
         throws IOException {
         // invoke service after setting necessary parameters
         Client client = ClientBuilder.newBuilder().register(MultiPartFeature.class).build();

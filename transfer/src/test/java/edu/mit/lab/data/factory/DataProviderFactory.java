@@ -1,5 +1,7 @@
 package edu.mit.lab.data.factory;
 
+import edu.mit.lab.interfs.request.IFileRequest;
+import edu.mit.lab.request.FileRequestImpl;
 import org.testng.annotations.DataProvider;
 
 import java.io.File;
@@ -17,12 +19,20 @@ import java.io.File;
 public class DataProviderFactory {
 
     private static final String baseURL = "http://localhost:9080/rest";
+    private static IFileRequest instance;
+
+    private static IFileRequest getIFileRequestInstance() {
+        if (instance == null) {
+            instance = new FileRequestImpl();
+        }
+        return instance;
+    }
 
     @DataProvider(name = "file-walk-download")
     public static Object[][] downloadDataProvider() {
         String actionPath = "file/download";
         String fileName = "linux.png";
-        return new Object[][]{{baseURL, actionPath, fileName}};
+        return new Object[][]{{getIFileRequestInstance(), baseURL, actionPath, fileName}};
     }
 
     @DataProvider(name = "file-walk-upload")
@@ -32,9 +42,14 @@ public class DataProviderFactory {
         File entity = new File(directory, uploadFileName);
         if (entity.exists() && entity.isFile() && entity.canRead()) {
             String actionPath = "file/upload";
-            return new Object[][]{{entity, baseURL, actionPath}};
+            return new Object[][]{{getIFileRequestInstance(), entity, baseURL, actionPath}};
         } else {
             return new Object[][]{};
         }
+    }
+
+    @DataProvider(name = "file-walk-all")
+    public static Object[][] fileWalk(){
+        return new Object[][]{};
     }
 }
