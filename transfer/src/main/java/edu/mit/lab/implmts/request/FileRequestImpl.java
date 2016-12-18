@@ -25,9 +25,9 @@ import java.io.OutputStream;
 public class FileRequestImpl implements IFileRequest {
 
     private static final Logger logger = LogManager.getLogger(FileRequestImpl.class);
-    private static final String DOWNLOAD_FILE_LOCATION = "I:/Download/Store";
+    private static final String DOWNLOAD_FILE_LOCATION = "K:/Store/Download";
 
-    public String uploadService(File entity, String baseURL, String specifiedPath) throws Exception {
+    public String uploadFile(File entity, String baseURL, String specifiedPath) throws Exception {
         Client client = null;
         WebTarget target;
         Response response = null;
@@ -85,8 +85,7 @@ public class FileRequestImpl implements IFileRequest {
         return message;
     }
 
-    public String downloadFileService(String baseURL, String specifiedPath, String fileName)
-        throws IOException {
+    public String downloadFile(String baseURL, String specifiedPath, String fileName) throws IOException {
         logger.trace("Request to download file from client.");
         // invoke service after setting necessary parameters
         Client client = ClientBuilder.newBuilder().register(MultiPartFeature.class).build();

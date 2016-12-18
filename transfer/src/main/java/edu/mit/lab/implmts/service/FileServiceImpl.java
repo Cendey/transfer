@@ -30,7 +30,7 @@ import java.io.OutputStream;
 public class FileServiceImpl implements IFileService {
 
     private static final Logger logger = LogManager.getLogger(FileServiceImpl.class);
-    private static final String UPLOAD_FILE_LOCATION = "I:/Kewill/Store";
+    private static final String UPLOAD_FILE_LOCATION = "K:/Store/Upload";
 
     @GET
     @Path("/download/{fileName}")

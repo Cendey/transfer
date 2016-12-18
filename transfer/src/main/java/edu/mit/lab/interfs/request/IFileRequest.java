@@ -15,7 +15,7 @@ import java.io.IOException;
  */
 public interface IFileRequest {
 
-    String uploadService(File entity, String baseURL, String specifiedPath) throws Exception;
+    String uploadFile(File entity, String baseURL, String specifiedPath) throws Exception;
 
-    String downloadFileService(String baseURL, String specifiedPath, String fileName) throws IOException;
+    String downloadFile(String baseURL, String specifiedPath, String fileName) throws IOException;
 }

@@ -21,13 +21,13 @@ public class FileRequestImplTest {
     @Test(timeOut = 50, dataProviderClass = DataProviderFactory.class, dataProvider = "file-walk-upload")
     public void testUploadService(
         IFileRequest instance, File entity, String baseURL, String specifiedPath) throws Exception {
-        instance.uploadService(entity, baseURL, specifiedPath);
+        instance.uploadFile(entity, baseURL, specifiedPath);
     }
 
     @Test(timeOut = 50, dataProviderClass = DataProviderFactory.class, dataProvider = "file-walk-download")
     public void testDownloadFileService(
         IFileRequest instance, String baseURL, String specifiedPath, String fileName) throws Exception {
-        instance.downloadFileService(baseURL, specifiedPath, fileName);
+        instance.downloadFile(baseURL, specifiedPath, fileName);
     }
 
     @Test(timeOut = 80, dataProviderClass = DataProviderFactory.class, dataProvider = "file-walk-all")
@@ -38,9 +38,9 @@ public class FileRequestImplTest {
         if (entity.exists() && entity.isFile() && entity.canRead()) {
             System.out
                 .println(
-                    String.format("Response message : %s", instance.uploadService(entity, baseURL, uploadPath)));
+                    String.format("Response message : %s", instance.uploadFile(entity, baseURL, uploadPath)));
         }
-        System.out.println(instance.downloadFileService(baseURL, downloadPath, downloadFileName));
+        System.out.println(instance.downloadFile(baseURL, downloadPath, downloadFileName));
     }
 
 }
