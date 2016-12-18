@@ -2,6 +2,8 @@ package edu.mit.lab.data.factory;
 
 import edu.mit.lab.interfs.request.IFileRequest;
 import edu.mit.lab.implmts.request.FileRequestImpl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.testng.annotations.DataProvider;
 
 import java.io.File;
@@ -18,8 +20,9 @@ import java.io.File;
  */
 public class DataProviderFactory {
 
+    private static final Logger logger = LogManager.getLogger(DataProviderFactory.class);
     private static final String baseURL = "http://localhost:9080/rest";
-    private static final String UPLOAD_DIR = "I:/";
+    private static final String UPLOAD_DIR = "K:/Store/Upload";
     private static final String UPLOAD_FILE_NAME = "Beauty.jpg";
     private static final String UPLOAD_ACTION_PATH = "file/upload";
     private static final String DOWNLOAD_FILE_NAME = "linux.png";
@@ -28,6 +31,7 @@ public class DataProviderFactory {
 
     private static IFileRequest getIFileRequestInstance() {
         if (instance == null) {
+            logger.info("Init client request instance.");
             instance = new FileRequestImpl();
         }
         return instance;
@@ -45,6 +49,7 @@ public class DataProviderFactory {
         if (entity.exists() && entity.isFile() && entity.canRead()) {
             return new Object[][]{{getIFileRequestInstance(), entity, baseURL, UPLOAD_ACTION_PATH}};
         } else {
+            logger.warn("Upload file-{} does not exists",UPLOAD_FILE_NAME);
             return new Object[][]{};
         }
     }

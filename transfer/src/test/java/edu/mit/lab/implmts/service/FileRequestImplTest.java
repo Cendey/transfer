@@ -18,13 +18,13 @@ import java.io.File;
  */
 public class FileRequestImplTest {
 
-    @Test(timeOut = 50, dataProviderClass = DataProviderFactory.class, dataProvider = "file-walk-upload")
+    @Test(dataProviderClass = DataProviderFactory.class, dataProvider = "file-walk-upload")
     public void testUploadService(
         IFileRequest instance, File entity, String baseURL, String specifiedPath) throws Exception {
         instance.uploadFile(entity, baseURL, specifiedPath);
     }
 
-    @Test(timeOut = 50, dataProviderClass = DataProviderFactory.class, dataProvider = "file-walk-download")
+    @Test(dataProviderClass = DataProviderFactory.class, dataProvider = "file-walk-download")
     public void testDownloadFileService(
         IFileRequest instance, String baseURL, String specifiedPath, String fileName) throws Exception {
         instance.downloadFile(baseURL, specifiedPath, fileName);
