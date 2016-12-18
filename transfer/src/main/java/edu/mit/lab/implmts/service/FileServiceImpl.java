@@ -1,8 +1,10 @@
-package edu.mit.lab.service;
+package edu.mit.lab.implmts.service;
 
 import edu.mit.lab.interfs.service.IFileService;
 import edu.mit.lab.utils.Toolkit;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
@@ -27,15 +29,18 @@ import java.io.OutputStream;
 @Path("/file")
 public class FileServiceImpl implements IFileService {
 
+    private static final Logger logger = LogManager.getLogger(FileServiceImpl.class);
     private static final String UPLOAD_FILE_LOCATION = "I:/Kewill/Store";
 
     @GET
     @Path("/download/{fileName}")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response downloadFile(@PathParam("fileName") String fileName) {
+        logger.trace("File : {} , will be download from request",fileName);
         String category = FilenameUtils.getExtension(fileName);
         File file = new File(Toolkit.destDir(UPLOAD_FILE_LOCATION, category), fileName);
         if (!file.exists() || !file.isFile() || !file.canRead()) {
+            logger.error("File : {}, can't be found to download",fileName);
             throw new WebApplicationException(404);
         }
         try {
@@ -50,7 +55,7 @@ public class FileServiceImpl implements IFileService {
                             }
                         }
                     } catch (Exception e) {
-                        System.err.println(e.getMessage());
+                        logger.error(e.getMessage());
                     }
                 }
             };
@@ -60,7 +65,7 @@ public class FileServiceImpl implements IFileService {
                 .header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
                 .header("Cache-Control", "no-cache").build();
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            logger.error(e.getMessage());
             return Response.serverError().entity("Exception occurred when loading file").build();
         }
     }
@@ -72,6 +77,7 @@ public class FileServiceImpl implements IFileService {
         @FormDataParam("uploadFile") InputStream fileInputStream,
         @FormDataParam("uploadFile") FormDataContentDisposition fileFormDataContentDisposition) {
         String fileFullName = fileFormDataContentDisposition.getFileName();
+        logger.trace("File : {} is prepared to upload",fileFullName);
         String category = FilenameUtils.getExtension(fileFullName);
         Toolkit.initDir(UPLOAD_FILE_LOCATION, category);
         String destDir = Toolkit.destDir(UPLOAD_FILE_LOCATION, category);
@@ -84,7 +90,7 @@ public class FileServiceImpl implements IFileService {
             }
             outputStream.flush();
         } catch (IOException e) {
-            System.err.println(e.getMessage());
+            logger.error(e.getMessage());
         }
         return Response.ok("File uploaded successfully at " + destDir + fileFullName).build();
     }

@@ -12,7 +12,7 @@
         <!-- Register resources and providers -->
         <init-param>
             <param-name>jersey.config.server.provider.packages</param-name>
-            <param-value>edu.mit.lab.service</param-value>
+            <param-value>edu.mit.lab.implmts.service</param-value>
         </init-param>
         <init-param>
             <param-name>jersey.config.server.provider.classnames</param-name>

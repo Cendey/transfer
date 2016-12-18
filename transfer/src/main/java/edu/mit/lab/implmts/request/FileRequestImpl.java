@@ -1,9 +1,11 @@
-package edu.mit.lab.request;
+package edu.mit.lab.implmts.request;
 
 
 import edu.mit.lab.interfs.request.IFileRequest;
 import edu.mit.lab.utils.Toolkit;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
@@ -22,6 +24,7 @@ import java.io.OutputStream;
 
 public class FileRequestImpl implements IFileRequest {
 
+    private static final Logger logger = LogManager.getLogger(FileRequestImpl.class);
     private static final String DOWNLOAD_FILE_LOCATION = "I:/Download/Store";
 
     public String uploadService(File entity, String baseURL, String specifiedPath) throws Exception {
@@ -33,6 +36,7 @@ public class FileRequestImpl implements IFileRequest {
         String message = null;
 
         try {
+            logger.trace("Request to upload file from client.");
             // invoke service after setting necessary parameters
             client = ClientBuilder.newBuilder().register(MultiPartFeature.class).build();
             target = client.target(baseURL).path(specifiedPath);
@@ -48,20 +52,20 @@ public class FileRequestImpl implements IFileRequest {
 
             // get response code
             int status = response.getStatus();
-            System.out.println("Response code: " + status);
+            logger.info("Response code: {}", status);
 
             if (response.getStatus() != 200) {
+                logger.error("Failed with HTTP error status : {}", status);
                 throw new RuntimeException(String.format("Failed with HTTP error status : %s", status));
             }
 
             // get response message
-            System.out
-                .println(String.format("Response message from server: %s", response.getStatusInfo().getReasonPhrase()));
+            logger.trace("Response message from server: {}", response.getStatusInfo().getReasonPhrase());
 
             // get response string
             message = response.readEntity(String.class);
         } catch (Exception ex) {
-            System.err.println(ex.getMessage());
+            logger.error(ex.getMessage());
         } finally {
             // release resources, if any
             if (fileDataBodyPart != null) {
@@ -83,6 +87,7 @@ public class FileRequestImpl implements IFileRequest {
 
     public String downloadFileService(String baseURL, String specifiedPath, String fileName)
         throws IOException {
+        logger.trace("Request to download file from client.");
         // invoke service after setting necessary parameters
         Client client = ClientBuilder.newBuilder().register(MultiPartFeature.class).build();
         client.property("accept", MediaType.APPLICATION_OCTET_STREAM);
@@ -93,15 +98,15 @@ public class FileRequestImpl implements IFileRequest {
 
         // get response code
         int status = response.getStatus();
-        System.out.println(String.format("Response status: %s", status));
+        logger.info("Response status: {}", status);
 
         if (response.getStatus() != 200) {
+            logger.error("Failed with HTTP error code : {}", status);
             throw new RuntimeException(String.format("Failed with HTTP error code : %s", status));
         }
 
         // get response message
-        System.out
-            .println(String.format("Response Message From Server: %s", response.getStatusInfo().getReasonPhrase()));
+        logger.info("Response Message From Server: {}", response.getStatusInfo().getReasonPhrase());
 
         // read response string
         InputStream inputStream = response.readEntity(InputStream.class);
@@ -118,9 +123,10 @@ public class FileRequestImpl implements IFileRequest {
             }
             outputStream.flush();
             // set download SUCCESS message to return
+            logger.info("Downloaded successfully at: {}", fullFileName);
             message = String.format("Downloaded successfully at: %s", fullFileName);
         } catch (Exception ex) {
-            System.err.println(ex.getMessage());
+            logger.error(ex.getMessage());
         } finally {
             // release resources, if any
             response.close();

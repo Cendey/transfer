@@ -1,15 +1,14 @@
-package edu.mit.lab.service;
+package edu.mit.lab.implmts.service;
 
 import edu.mit.lab.data.factory.DataProviderFactory;
 import edu.mit.lab.interfs.request.IFileRequest;
-import edu.mit.lab.request.FileRequestImpl;
 import org.testng.annotations.Test;
 
 import java.io.File;
 
 /**
  * <p>Title: MIT Lib Project</p>
- * <p>Description: edu.mit.lab.service.FileRequestImplTest</p>
+ * <p>Description: edu.mit.lab.implmts.service.FileRequestImplTest</p>
  * <p>Copyright: Copyright (c) 2016</p>
  * <p>Company: MIT Lib Co., Ltd</p>
  *

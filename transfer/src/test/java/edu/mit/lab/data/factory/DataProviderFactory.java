@@ -1,7 +1,7 @@
 package edu.mit.lab.data.factory;
 
 import edu.mit.lab.interfs.request.IFileRequest;
-import edu.mit.lab.request.FileRequestImpl;
+import edu.mit.lab.implmts.request.FileRequestImpl;
 import org.testng.annotations.DataProvider;
 
 import java.io.File;
