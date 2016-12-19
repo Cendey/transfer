@@ -20,6 +20,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 public class FileRequestImpl implements IFileRequest {
 
@@ -74,7 +76,8 @@ public class FileRequestImpl implements IFileRequest {
         client.property("accept", MediaType.APPLICATION_OCTET_STREAM);
 
         // invoke service
-        Response response = client.target(baseURL).path(specifiedPath).path(fileName).request().get();
+        Response response = client.target(baseURL).path(specifiedPath)
+            .path(URLEncoder.encode(fileName,"UTF-8")).request().get();
 
         // get response code
         int status = response.getStatus();

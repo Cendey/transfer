@@ -25,6 +25,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 
 @Path("/file")
 public class FileServiceImpl implements IFileService {
@@ -36,11 +39,16 @@ public class FileServiceImpl implements IFileService {
     @Path("/download/{fileName}")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response downloadFile(@PathParam("fileName") String fileName) {
-        logger.trace("File : {} , will be download from request",fileName);
+        logger.trace("File : {} , will be download from request", fileName);
+        try {
+            fileName = URLDecoder.decode(fileName, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            logger.error(e.getMessage());
+        }
         String category = FilenameUtils.getExtension(fileName);
         File file = new File(Toolkit.destDir(UPLOAD_FILE_LOCATION, category), fileName);
         if (!file.exists() || !file.isFile() || !file.canRead()) {
-            logger.error("File : {}, can't be found to download",fileName);
+            logger.error("File : {}, can't be found to download", fileName);
             throw new WebApplicationException(404);
         }
         try {
@@ -62,7 +70,7 @@ public class FileServiceImpl implements IFileService {
             String contentType = new MimetypesFileTypeMap().getContentType(file);
             return Response
                 .ok(streamingOutput, contentType)
-                .header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
+                .header("Content-Disposition", "attachment; filename=\"" + URLEncoder.encode(fileName, "UTF-8") + "\"")
                 .header("Cache-Control", "no-cache").build();
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -75,14 +83,19 @@ public class FileServiceImpl implements IFileService {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response uploadFile(
         @FormDataParam("uploadFile") InputStream fileInputStream,
-        @FormDataParam("uploadFile") FormDataContentDisposition fileFormDataContentDisposition) {
-        String fileFullName = fileFormDataContentDisposition.getFileName();
-        logger.trace("File : {} is prepared to upload",fileFullName);
+        @FormDataParam("uploadFile") FormDataContentDisposition formContentDisposition) {
+        String fileFullName = null;
+        try {
+            fileFullName = URLDecoder.decode(formContentDisposition.getFileName(),"UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            logger.error(e.getMessage());
+        }
+        logger.trace("File : {} is prepared to upload", fileFullName);
         String category = FilenameUtils.getExtension(fileFullName);
         Toolkit.initDir(UPLOAD_FILE_LOCATION, category);
         String destDir = Toolkit.destDir(UPLOAD_FILE_LOCATION, category);
-        try (OutputStream outputStream = new FileOutputStream(
-            new File(destDir, fileFullName))) {
+        assert fileFullName != null;
+        try (OutputStream outputStream = new FileOutputStream(new File(destDir, fileFullName))) {
             int read;
             byte[] buff = new byte[1024];
             while ((read = fileInputStream.read(buff)) != -1) {

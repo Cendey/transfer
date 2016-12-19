@@ -24,5 +24,5 @@ public interface IFileService {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     Response uploadFile(
         @FormDataParam("uploadFile") InputStream fileInputStream,
-        @FormDataParam("uploadFile") FormDataContentDisposition fileFormDataContentDisposition);
+        @FormDataParam("uploadFile") FormDataContentDisposition formContentDisposition);
 }
