@@ -12,6 +12,16 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.InputStream;
 
+/**
+ * <p>Title: Study Center Project</p>
+ * <p>Description: edu.mit.lab.interfs.service.IFileService</p>
+ * <p>Copyright: Copyright  © 2003, 2016, MIT CO., LTD. and/or its affiliates. All Rights Reserved.</p>
+ * <p>Company: MIT CO., LTD.</p>
+ *
+ * @author <chao.deng@mit.edu>
+ * @version 1.0
+ * @since 2016-12-17
+ */
 public interface IFileService {
 
     @GET

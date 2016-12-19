@@ -29,6 +29,17 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
+/**
+ * <p>Title: Study Center Project</p>
+ * <p>Description: edu.mit.lab.implmts.service.FileServiceImpl</p>
+ * <p>Copyright: Copyright  © 2003, 2016, MIT CO., LTD. and/or its affiliates. All Rights Reserved.</p>
+ * <p>Company: MIT CO., LTD.</p>
+ *
+ * @author <chao.deng@mit.edu>
+ * @version 1.0
+ * @since 2016-12-17
+ */
+
 @Path("/file")
 public class FileServiceImpl implements IFileService {
 

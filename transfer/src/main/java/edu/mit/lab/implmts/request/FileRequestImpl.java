@@ -1,6 +1,5 @@
 package edu.mit.lab.implmts.request;
 
-
 import edu.mit.lab.interfs.request.IFileRequest;
 import edu.mit.lab.utils.Toolkit;
 import org.apache.commons.io.FilenameUtils;
@@ -21,6 +20,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLEncoder;
+
+/**
+ * <p>Title: Study Center Project</p>
+ * <p>Description: edu.mit.lab.implmts.request.FileRequestImpl</p>
+ * <p>Copyright: Copyright  © 2003, 2016, MIT CO., LTD. and/or its affiliates. All Rights Reserved.</p>
+ * <p>Company: MIT CO., LTD.</p>
+ *
+ * @author <chao.deng@mit.edu>
+ * @version 1.0
+ * @since 2016-12-17
+ */
 
 public class FileRequestImpl implements IFileRequest {
 
@@ -72,11 +82,11 @@ public class FileRequestImpl implements IFileRequest {
         logger.trace("Request to download file from client.");
         // invoke service after setting necessary parameters
         Client client = ClientBuilder.newBuilder().register(MultiPartFeature.class).build();
-        client.property("accept", MediaType.APPLICATION_OCTET_STREAM);
+        client.property("Accept", MediaType.APPLICATION_OCTET_STREAM);
 
         // invoke service
         Response response = client.target(baseURL).path(specifiedPath)
-            .path(URLEncoder.encode(fileName,"UTF-8")).request().get();
+            .path(URLEncoder.encode(fileName, "UTF-8")).request().get();
 
         // get response code
         int status = response.getStatus();
