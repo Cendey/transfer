@@ -32,10 +32,9 @@ public class FileRequestImpl implements IFileRequest {
         WebTarget target;
         Response response = null;
         FileDataBodyPart fileDataBodyPart = null;
-        FormDataMultiPart formDataMultiPart = null;
         String message = null;
 
-        try {
+        try (FormDataMultiPart formDataMultiPart = new FormDataMultiPart()) {
             logger.trace("Request to upload file from client.");
             // invoke service after setting necessary parameters
             client = ClientBuilder.newBuilder().register(MultiPartFeature.class).build();
@@ -43,7 +42,6 @@ public class FileRequestImpl implements IFileRequest {
 
             // set file upload values
             fileDataBodyPart = new FileDataBodyPart("uploadFile", entity);
-            formDataMultiPart = new FormDataMultiPart();
             formDataMultiPart.bodyPart(fileDataBodyPart);
 
             // invocationBuilder.header("Authorization", "Basic " + authorization);
@@ -67,20 +65,7 @@ public class FileRequestImpl implements IFileRequest {
         } catch (Exception ex) {
             logger.error(ex.getMessage());
         } finally {
-            // release resources, if any
-            if (fileDataBodyPart != null) {
-                fileDataBodyPart.cleanup();
-            }
-            if (formDataMultiPart != null) {
-                formDataMultiPart.cleanup();
-                formDataMultiPart.close();
-            }
-            if (response != null) {
-                response.close();
-            }
-            if (client != null) {
-                client.close();
-            }
+            clear(client, response, fileDataBodyPart);
         }
         return message;
     }
@@ -127,10 +112,25 @@ public class FileRequestImpl implements IFileRequest {
         } catch (Exception ex) {
             logger.error(ex.getMessage());
         } finally {
-            // release resources, if any
-            response.close();
-            client.close();
+            clear(client, response);
         }
         return message;
+    }
+
+    private void clear(Client client, Response response) throws IOException {
+        clear(client, response, null);
+    }
+
+    private void clear(Client client, Response response, FileDataBodyPart fileBodyPart) throws IOException {
+        // release resources, if any
+        if (fileBodyPart != null) {
+            fileBodyPart.cleanup();
+        }
+        if (response != null) {
+            response.close();
+        }
+        if (client != null) {
+            client.close();
+        }
     }
 }
