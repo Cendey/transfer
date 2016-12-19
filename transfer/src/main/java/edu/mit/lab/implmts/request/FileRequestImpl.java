@@ -13,7 +13,6 @@ import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.File;
@@ -29,7 +28,6 @@ public class FileRequestImpl implements IFileRequest {
 
     public String uploadFile(File entity, String baseURL, String specifiedPath) throws Exception {
         Client client = null;
-        WebTarget target;
         Response response = null;
         FileDataBodyPart fileDataBodyPart = null;
         String message = null;
@@ -38,14 +36,13 @@ public class FileRequestImpl implements IFileRequest {
             logger.trace("Request to upload file from client.");
             // invoke service after setting necessary parameters
             client = ClientBuilder.newBuilder().register(MultiPartFeature.class).build();
-            target = client.target(baseURL).path(specifiedPath);
 
             // set file upload values
             fileDataBodyPart = new FileDataBodyPart("uploadFile", entity);
             formDataMultiPart.bodyPart(fileDataBodyPart);
 
             // invocationBuilder.header("Authorization", "Basic " + authorization);
-            response = target.request(MediaType.APPLICATION_OCTET_STREAM_TYPE)
+            response = client.target(baseURL).path(specifiedPath).request(MediaType.APPLICATION_OCTET_STREAM_TYPE)
                 .post(Entity.entity(formDataMultiPart, MediaType.MULTIPART_FORM_DATA));
 
             // get response code
@@ -75,10 +72,9 @@ public class FileRequestImpl implements IFileRequest {
         // invoke service after setting necessary parameters
         Client client = ClientBuilder.newBuilder().register(MultiPartFeature.class).build();
         client.property("accept", MediaType.APPLICATION_OCTET_STREAM);
-        WebTarget target = client.target(baseURL).path(specifiedPath).path(fileName);
 
         // invoke service
-        Response response = target.request().get();
+        Response response = client.target(baseURL).path(specifiedPath).path(fileName).request().get();
 
         // get response code
         int status = response.getStatus();
