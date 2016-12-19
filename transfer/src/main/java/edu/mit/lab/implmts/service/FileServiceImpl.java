@@ -33,7 +33,7 @@ import java.net.URLEncoder;
 public class FileServiceImpl implements IFileService {
 
     private static final Logger logger = LogManager.getLogger(FileServiceImpl.class);
-    private static final String UPLOAD_FILE_LOCATION = "K:/Store/Upload";
+    private static final String FILES_STORE_LOCATION = "K:/Store/Upload";
 
     @GET
     @Path("/download/{fileName}")
@@ -46,7 +46,7 @@ public class FileServiceImpl implements IFileService {
             logger.error(e.getMessage());
         }
         String category = FilenameUtils.getExtension(fileName);
-        File file = new File(Toolkit.destDir(UPLOAD_FILE_LOCATION, category), fileName);
+        File file = new File(Toolkit.destDir(FILES_STORE_LOCATION, category), fileName);
         if (!file.exists() || !file.isFile() || !file.canRead()) {
             logger.error("File : {}, can't be found to download", fileName);
             throw new WebApplicationException(404);
@@ -92,8 +92,8 @@ public class FileServiceImpl implements IFileService {
         }
         logger.trace("File : {} is prepared to upload", fileFullName);
         String category = FilenameUtils.getExtension(fileFullName);
-        Toolkit.initDir(UPLOAD_FILE_LOCATION, category);
-        String destDir = Toolkit.destDir(UPLOAD_FILE_LOCATION, category);
+        Toolkit.initDir(FILES_STORE_LOCATION, category);
+        String destDir = Toolkit.destDir(FILES_STORE_LOCATION, category);
         assert fileFullName != null;
         try (OutputStream outputStream = new FileOutputStream(new File(destDir, fileFullName))) {
             int read;
