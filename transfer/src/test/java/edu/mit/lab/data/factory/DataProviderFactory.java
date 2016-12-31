@@ -23,9 +23,9 @@ public class DataProviderFactory {
     private static final Logger logger = LogManager.getLogger(DataProviderFactory.class);
     private static final String baseURL = "http://localhost:9080/rest";
     private static final String UPLOAD_DIR = "K:/Store/Upload";
-    private static final String UPLOAD_FILE_NAME = "Beauty.jpg";
+    private static final String UPLOAD_FILE_NAME = "unix-logo.gif";
     private static final String UPLOAD_ACTION_PATH = "file/upload";
-    private static final String DOWNLOAD_FILE_NAME = "linux.png";
+    private static final String DOWNLOAD_FILE_NAME = "OS-Linux-icon.png";
     private static final String DOWNLOAD_ACTION_PATH = "file/download";
     private static IFileRequest instance;
 
