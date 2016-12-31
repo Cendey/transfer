@@ -7,6 +7,8 @@ import org.apache.logging.log4j.Logger;
 import org.testng.annotations.DataProvider;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 /**
  * <p>Title: MIT Lib Project</p>
@@ -39,17 +41,34 @@ public class DataProviderFactory {
 
     @DataProvider(name = "file-walk-download")
     public static Object[][] downloadDataProvider() {
-        return new Object[][]{{getIFileRequestInstance(), baseURL, DOWNLOAD_ACTION_PATH, DOWNLOAD_FILE_NAME}};
+        Object[][] data = null;
+        try {
+            data = new Object[][]{
+                {
+                    getIFileRequestInstance(), baseURL, DOWNLOAD_ACTION_PATH,
+                    URLEncoder.encode(DOWNLOAD_FILE_NAME, "UTF-8")
+                }
+            };
+        } catch (UnsupportedEncodingException e) {
+            logger.error(e.getMessage());
+        }
+        return data;
     }
 
     @DataProvider(name = "file-walk-upload")
     public static Object[][] uploadDataProvider() {
 
-        File entity = new File(UPLOAD_DIR, UPLOAD_FILE_NAME);
+        File entity = null;
+        try {
+            entity = new File(UPLOAD_DIR, URLEncoder.encode(UPLOAD_FILE_NAME, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            logger.error(e.getMessage());
+        }
+        assert entity != null;
         if (entity.exists() && entity.isFile() && entity.canRead()) {
             return new Object[][]{{getIFileRequestInstance(), entity, baseURL, UPLOAD_ACTION_PATH}};
         } else {
-            logger.warn("Upload file-{} does not exists",UPLOAD_FILE_NAME);
+            logger.warn("Upload file-{} does not exists", UPLOAD_FILE_NAME);
             return new Object[][]{};
         }
     }

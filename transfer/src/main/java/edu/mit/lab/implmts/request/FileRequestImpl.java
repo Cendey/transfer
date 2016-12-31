@@ -1,6 +1,5 @@
 package edu.mit.lab.implmts.request;
 
-
 import edu.mit.lab.interfs.request.IFileRequest;
 import edu.mit.lab.utils.Toolkit;
 import org.apache.commons.io.FilenameUtils;
@@ -13,7 +12,6 @@ import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.File;
@@ -21,6 +19,18 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLEncoder;
+
+/**
+ * <p>Title: Study Center Project</p>
+ * <p>Description: edu.mit.lab.implmts.request.FileRequestImpl</p>
+ * <p>Copyright: Copyright  © 2003, 2016, MIT CO., LTD. and/or its affiliates. All Rights Reserved.</p>
+ * <p>Company: MIT CO., LTD.</p>
+ *
+ * @author <chao.deng@mit.edu>
+ * @version 1.0
+ * @since 2016-12-17
+ */
 
 public class FileRequestImpl implements IFileRequest {
 
@@ -29,25 +39,21 @@ public class FileRequestImpl implements IFileRequest {
 
     public String uploadFile(File entity, String baseURL, String specifiedPath) throws Exception {
         Client client = null;
-        WebTarget target;
         Response response = null;
         FileDataBodyPart fileDataBodyPart = null;
-        FormDataMultiPart formDataMultiPart = null;
         String message = null;
 
-        try {
+        try (FormDataMultiPart formDataMultiPart = new FormDataMultiPart()) {
             logger.trace("Request to upload file from client.");
             // invoke service after setting necessary parameters
             client = ClientBuilder.newBuilder().register(MultiPartFeature.class).build();
-            target = client.target(baseURL).path(specifiedPath);
 
             // set file upload values
             fileDataBodyPart = new FileDataBodyPart("uploadFile", entity);
-            formDataMultiPart = new FormDataMultiPart();
             formDataMultiPart.bodyPart(fileDataBodyPart);
 
             // invocationBuilder.header("Authorization", "Basic " + authorization);
-            response = target.request(MediaType.APPLICATION_OCTET_STREAM_TYPE)
+            response = client.target(baseURL).path(specifiedPath).request(MediaType.APPLICATION_OCTET_STREAM_TYPE)
                 .post(Entity.entity(formDataMultiPart, MediaType.MULTIPART_FORM_DATA));
 
             // get response code
@@ -67,20 +73,7 @@ public class FileRequestImpl implements IFileRequest {
         } catch (Exception ex) {
             logger.error(ex.getMessage());
         } finally {
-            // release resources, if any
-            if (fileDataBodyPart != null) {
-                fileDataBodyPart.cleanup();
-            }
-            if (formDataMultiPart != null) {
-                formDataMultiPart.cleanup();
-                formDataMultiPart.close();
-            }
-            if (response != null) {
-                response.close();
-            }
-            if (client != null) {
-                client.close();
-            }
+            clear(client, response, fileDataBodyPart);
         }
         return message;
     }
@@ -89,11 +82,11 @@ public class FileRequestImpl implements IFileRequest {
         logger.trace("Request to download file from client.");
         // invoke service after setting necessary parameters
         Client client = ClientBuilder.newBuilder().register(MultiPartFeature.class).build();
-        client.property("accept", MediaType.APPLICATION_OCTET_STREAM);
-        WebTarget target = client.target(baseURL).path(specifiedPath).path(fileName);
+        client.property("Accept", MediaType.APPLICATION_OCTET_STREAM);
 
         // invoke service
-        Response response = target.request().get();
+        Response response = client.target(baseURL).path(specifiedPath)
+            .path(URLEncoder.encode(fileName, "UTF-8")).request().get();
 
         // get response code
         int status = response.getStatus();
@@ -127,10 +120,25 @@ public class FileRequestImpl implements IFileRequest {
         } catch (Exception ex) {
             logger.error(ex.getMessage());
         } finally {
-            // release resources, if any
-            response.close();
-            client.close();
+            clear(client, response);
         }
         return message;
+    }
+
+    private void clear(Client client, Response response) throws IOException {
+        clear(client, response, null);
+    }
+
+    private void clear(Client client, Response response, FileDataBodyPart fileBodyPart) throws IOException {
+        // release resources, if any
+        if (fileBodyPart != null) {
+            fileBodyPart.cleanup();
+        }
+        if (response != null) {
+            response.close();
+        }
+        if (client != null) {
+            client.close();
+        }
     }
 }
